@@ -1,5 +1,5 @@
 #include <XBee.h>
-#include <Printers.h>
+#include "binary.h"
 
 #define XBeeSerial Serial
 #define LED 11
@@ -21,39 +21,27 @@ void setup() {
   //sendPacket();
 }
 
-void sendPacket() {
-    // Prepare the Zigbee Transmit Request API packet
-    txRequest.setAddress64(0x0013A200415C98A9);
-    uint8_t payload[] = {'H', 'e', 'l', 'l', 'o', ',', ' ', 'w', 'o', 'r', 'l', 'd', '!'};
-    txRequest.setPayload(payload, sizeof(payload));
-    xbee.send(txRequest);
-    if (xbee.readPacket(500)){
-    // got a response!
-    // should be a znet tx status            	
-      if (xbee.getResponse().getApiId() == ZB_TX_STATUS_RESPONSE) {
-        xbee.getResponse().getZBTxStatusResponse(txStatus);
-        if (txStatus.getDeliveryStatus() == SUCCESS) {
-
-        } else {
-          digitalWrite(LED,HIGH);
-        }
-     }
-    }
-}
-
-    
-    
 void processRxPacket(ZBRxResponse& rx, uintptr_t) {
-  txRequest.setAddress64(0x0013A200415C98A9);
-  txRequest.setPayload(rx.getData(), rx.getDataLength());    
-  xbee.send(txRequest);
-  digitalWrite(LED,HIGH);
+  Buffer b(rx.getData(), rx.getDataLength());
+  uint8_t type = b.remove<uint8_t>();
+  XBeeAddress64 addr = rx.getRemoteAddress64();
+  if (addr == 0x0013A2004107298D && type == 1 && b.len() == 8) {
+    txRequest.setAddress64(0x0013A200415C98A9);
+    txRequest.setPayload(rx.getData(), rx.getDataLength());    
+    xbee.send(txRequest);
+    return;
+  }
+  if(addr == 0x0013A200415C98A9 && type == 2 && b.len() == 1){
+    txRequest.setAddress64(0x0013A2004107298D);
+    txRequest.setPayload(rx.getData(), rx.getDataLength());    
+    xbee.send(txRequest);
+    return;
+  }
+
 }
 
 
 void loop() {
-  //digitalWrite(LED,HIGH);
-  //sendPacket();
   // Check the serial port to see if there is a new packet available
   xbee.loop();
 }

@@ -1,5 +1,7 @@
 Coor: 0013A200415C98A9 high:13A200 low:415C98A9
-Router: 0013A2004155C20F high:13A200 low:4155C20F  -- có bọc ngang
+Router: 0013A2004155C20F high:13A200 low:4155C20F  -- có bọc ngang  Router
 Router 2: 0013A2004155C24B high:13A200 low:4155C24B -- không có bọc anten
 End Device: 0013A2004107298D --anten bình thường
-Router 3 :0013A2004154EB7A
+Router 3 :0013A2004154EB7A   ROUTER3
+01 23456789 10 17
+013333cb41cdccf441
