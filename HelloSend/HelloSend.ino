@@ -25,7 +25,7 @@ void setup() {
   XBeeSerial.begin(9600);
   xbee.begin(XBeeSerial);
   delay(1);
-  xbee.onZBRxResponse(processRxPacket);
+  // xbee.onZBRxResponse(processRxPacket);
 }
 
 void sendPacket() {
@@ -121,7 +121,7 @@ void loop() {
   // Check the serial port to see if there is a new packet available
   xbee.loop();
   // digitalWrite(LED,HIGH); 
-  // Send a packet every 10 seconds
+  // Send a packet every 4 seconds
   if (millis() - last_tx_time > 4000) {
     last_tx_time = millis();
     sendPacket();
